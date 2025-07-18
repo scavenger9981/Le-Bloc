@@ -36,7 +36,7 @@ function buildGate() {
            style="font-size:24px; padding:8px 12px; border:2px solid #ccc; border-radius:8px; text-align:center; width:120px; outline:none;">
     <button id="ytBtn"
             style="margin-top:16px; background:#00b894; color:white; border:none; padding:10px 20px; border-radius:8px; font-size:20px; cursor:pointer;">
-      ✅ Submit
+      Submit
     </button>
     <div id="ytErr"
          style="margin-top:12px; color:#d63031; height:24px; font-weight:bold;"></div>
