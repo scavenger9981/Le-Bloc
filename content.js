@@ -38,32 +38,33 @@ function buildGate() {
   });
 
   overlay.innerHTML = `
-  <style>
-    #ytAns::-webkit-outer-spin-button,
-    #ytAns::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    #ytAns {
-      -moz-appearance: textfield;
-      appearance: textfield;
-    }
-  </style>
+    <style>
+      #ytAns::-webkit-outer-spin-button,
+      #ytAns::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      #ytAns {
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+    </style>
 
-  <div style="font-size:32px; font-weight:600; margin-bottom:16px;">⏱ Time's Up!</div>
-  <div style="margin-bottom:12px;">Solve this to unlock all sites:</div>
-  <div style="margin:12px 0; font-size:28px;">${a} + ${b} = ?</div>
-  <input id="ytAns" type="number" placeholder="Answer"
-        style="font-size:24px; padding:8px 12px; border:2px solid #ccc; border-radius:8px; text-align:center; width:120px; outline:none;">
-  <button id="ytBtn"
-          style="margin-top:16px; background:#00b894; color:white; border:none; padding:10px 20px; border-radius:8px; font-size:20px; cursor:pointer;">
-    Submit
-  </button>
-  <div id="ytErr"
-      style="margin-top:12px; color:#d63031; height:24px; font-weight:bold;"></div>
+    <div style="font-size:32px; font-weight:600; margin-bottom:16px;">⏱ Time's Up!</div>
+    <div style="margin-bottom:12px;">Solve this to unlock all sites:</div>
+    <div style="margin:12px 0; font-size:28px;">${a} + ${b} = ?</div>
+    <input id="ytAns" type="number" placeholder="Answer"
+          style="font-size:24px; padding:8px 12px; border:2px solid #ccc; border-radius:8px; text-align:center; width:120px; outline:none;">
+    <button id="ytBtn"
+            style="margin-top:16px; background:#00b894; color:white; border:none; padding:10px 20px; border-radius:8px; font-size:20px; cursor:pointer;">
+      Submit
+    </button>
+    <div id="ytErr"
+        style="margin-top:12px; color:#d63031; height:24px; font-weight:bold;"></div>
   `;
 
   (document.documentElement || document.body).appendChild(overlay);
+  document.body.style.overflow = 'hidden'; 
   requestAnimationFrame(() => { overlay.style.opacity = '1'; });
 
   const inp = overlay.querySelector('#ytAns');
@@ -74,6 +75,7 @@ function buildGate() {
     if (Number(inp.value.trim()) === answer) {
       overlay.remove();
       overlay = null;
+      document.body.style.overflow = '';   
 
       // Resume video if it was playing
       try {
