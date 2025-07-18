@@ -2,7 +2,8 @@
 let overlay = null;
 
 function buildGate() {
-  if (overlay) return;          // already shown
+  if (overlay) return;
+
   const a = Math.floor(Math.random() * 10) + 1;
   const b = Math.floor(Math.random() * 10) + 1;
   const answer = a + b;
@@ -10,20 +11,39 @@ function buildGate() {
   overlay = document.createElement('div');
   overlay.id = 'ytSharedGate';
   Object.assign(overlay.style, {
-    position: 'fixed', inset: 0, background: '#111', color: '#eee',
-    display: 'flex', flexDirection: 'column', alignItems: 'center',
-    justifyContent: 'center', font: '24px/1.4 system-ui, sans-serif',
-    zIndex: 2147483647
+    position: 'fixed',
+    inset: 0,
+    background: 'rgba(0,0,0,0.75)',
+    color: '#fff',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    font: '20px/1.5 "Segoe UI", sans-serif',
+    zIndex: 2147483647,
+    padding: '20px',
+    textAlign: 'center',
+    backdropFilter: 'blur(4px)',
+    opacity: '0',
+    transition: 'opacity 0.5s ease'
   });
+
   overlay.innerHTML = `
-    <div>Global 5-second limit reached!</div>
-    <div style="margin:12px 0">${a} + ${b} = ?</div>
+    <div style="font-size:32px; font-weight:600; margin-bottom:16px;">⏱ Time's Up!</div>
+    <div style="margin-bottom:12px;">Solve this to unlock all sites:</div>
+    <div style="margin:12px 0; font-size:28px;">${a} + ${b} = ?</div>
     <input id="ytAns" type="number" placeholder="Answer"
-           style="font-size:24px;width:100px;text-align:center">
-    <button id="ytBtn" style="margin-top:12px;font-size:20px">Submit</button>
-    <div id="ytErr" style="margin-top:8px;color:#ff6b6b;height:24px"></div>
+           style="font-size:24px; padding:8px 12px; border:2px solid #ccc; border-radius:8px; text-align:center; width:120px; outline:none;">
+    <button id="ytBtn"
+            style="margin-top:16px; background:#00b894; color:white; border:none; padding:10px 20px; border-radius:8px; font-size:20px; cursor:pointer;">
+      ✅ Submit
+    </button>
+    <div id="ytErr"
+         style="margin-top:12px; color:#d63031; height:24px; font-weight:bold;"></div>
   `;
+
   (document.documentElement || document.body).appendChild(overlay);
+  requestAnimationFrame(() => { overlay.style.opacity = '1'; });
 
   const inp = overlay.querySelector('#ytAns');
   const btn = overlay.querySelector('#ytBtn');
@@ -35,14 +55,16 @@ function buildGate() {
       overlay = null;
       chrome.runtime.sendMessage({ cmd: 'reset' });
     } else {
-      err.textContent = 'Try again';
+      err.textContent = '❌ Try again!';
       inp.select();
     }
   }
+
   btn.addEventListener('click', check);
   inp.addEventListener('keydown', e => e.key === 'Enter' && check());
   inp.focus();
 }
+
 
 function hideGate() {
   if (overlay) overlay.remove(), overlay = null;
