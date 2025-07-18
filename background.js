@@ -5,11 +5,19 @@ let timerId   = null;
 let elapsed   = 0;
 
 // Broadcast a command to every open YouTube tab
+// Broadcast a command to every open YouTube, Instagram, and TikTok tab
 function broadcast(cmd) {
-  chrome.tabs.query({ url: '*://*.youtube.com/*' }, tabs =>
+  chrome.tabs.query({
+    url: [
+      '*://*.youtube.com/*',
+      '*://*.instagram.com/*',
+      '*://*.tiktok.com/*'
+    ]
+  }, tabs =>
     tabs.forEach(t => chrome.tabs.sendMessage(t.id, { cmd }).catch(() => {}))
   );
 }
+
 
 function resetTimer() {
   elapsed = 0;
