@@ -1,6 +1,6 @@
 {
   "name": "Shared 5-sec Video Gate",
-  "description": "After 5 global seconds on YouTube, Instagram, or TikTok, every tab is blocked together.",
+  "description": "After 5 seconds on YouTube, Instagram, or TikTok, all tabs get blocked together.",
   "version": "4.0",
   "manifest_version": 3,
   "permissions": ["tabs", "storage"],
@@ -22,5 +22,8 @@
       "js": ["content.js"],
       "run_at": "document_start"
     }
-  ]
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
 }

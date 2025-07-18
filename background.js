@@ -1,11 +1,7 @@
-// Shared 5-second wall-clock timer for all YouTube tabs
 const LIMIT_MS = 5000;
+let timerId = null;
+let elapsed = 0;
 
-let timerId   = null;
-let elapsed   = 0;
-
-// Broadcast a command to every open YouTube tab
-// Broadcast a command to every open YouTube, Instagram, and TikTok tab
 function broadcast(cmd) {
   chrome.tabs.query({
     url: [
@@ -18,17 +14,16 @@ function broadcast(cmd) {
   );
 }
 
-
 function resetTimer() {
   elapsed = 0;
   if (timerId) clearInterval(timerId), timerId = null;
   chrome.storage.local.set({ expired: false });
   broadcast('hideGate');
-  startTimer();   // immediately begin the next 5-second cycle
+  startTimer();
 }
 
 function startTimer() {
-  if (timerId) return;          // already running
+  if (timerId) return;
   timerId = setInterval(() => {
     elapsed += 100;
     if (elapsed >= LIMIT_MS) {
@@ -40,7 +35,6 @@ function startTimer() {
   }, 100);
 }
 
-// initial run
 chrome.runtime.onStartup.addListener(resetTimer);
 chrome.runtime.onInstalled.addListener(resetTimer);
 
