@@ -1,5 +1,14 @@
-// Each YouTube tab listens for global gate commands
 let overlay = null;
+let wasPlaying = false;
+
+function getActiveVideo() {
+  const videos = Array.from(document.querySelectorAll('video'));
+  if (!videos.length) return null;
+
+  // Prefer visible videos
+  const visible = videos.find(v => v.offsetParent !== null);
+  return visible || videos[0];
+}
 
 function buildGate() {
   if (overlay) return;
@@ -53,6 +62,13 @@ function buildGate() {
     if (Number(inp.value.trim()) === answer) {
       overlay.remove();
       overlay = null;
+
+      // Resume video if it was playing
+      try {
+        const video = getActiveVideo();
+        if (video && wasPlaying) video.play();
+      } catch (_) {}
+
       chrome.runtime.sendMessage({ cmd: 'reset' });
     } else {
       err.textContent = '❌ Try again!';
@@ -65,22 +81,28 @@ function buildGate() {
   inp.focus();
 }
 
-
 function hideGate() {
   if (overlay) overlay.remove(), overlay = null;
 }
 
-// Listen for background commands
 chrome.runtime.onMessage.addListener(msg => {
-  if (msg.cmd === 'showGate') buildGate();
+  if (msg.cmd === 'showGate') {
+    try {
+      const video = getActiveVideo();
+      if (video) {
+        wasPlaying = !video.paused;
+        if (wasPlaying) video.pause();
+      }
+    } catch (_) {}
+    buildGate();
+  }
   if (msg.cmd === 'hideGate') hideGate();
 });
 
-// If the tab was opened while the timer had already expired
 try {
   chrome.storage.local.get('expired', ({ expired } = {}) => {
     if (expired) buildGate();
   });
 } catch (_) {
-  /* extension context invalidated — ignore */
+  /* ignore */
 }
